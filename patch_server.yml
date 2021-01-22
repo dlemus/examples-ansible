@@ -8,14 +8,6 @@
     security_only: "{{ 'yes' if patch_type == 'security' else 'no' }}"
   tasks:
 
-    - name: display result
-      debug:
-        var: bugfix_only
-
-    - name: display result
-      debug:
-        var: security_only
-        
     - name: upgrade packages via yum
       yum:
         name={{ yum_name }}
@@ -33,21 +25,19 @@
       debug:
         msg: "yum command produced errors"
       when: yumcommandout is not defined
-
+  
     - name: check to see if we need a reboot
       command: needs-restarting -r
       register: result
-      ignore_errors: yes
-
-    - name: display result
-      debug:
-        var: result.rc
+      ignore_errors: true
+      changed_when: false
 
     - name: Reboot Server if Necessary
       command: shutdown -r now "Ansible Updates Triggered"
       become: true
       async: 30
       poll: 0
+      ignore_errors: true
       when: result.rc == 1
 
     # This pause is mandatory, otherwise the existing control connection
