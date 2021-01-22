@@ -8,6 +8,14 @@
     security_only: "{{ 'yes' if patch_type == 'security' else 'no' }}"
   tasks:
 
+    - name: display result
+      debug:
+        var: bugfix_only
+
+    - name: display result
+      debug:
+        var: security_only
+        
     - name: upgrade packages via yum
       yum:
         name={{ yum_name }}
