@@ -1,11 +1,11 @@
 ---
 - name: Patch and reboot servers
-  hosts: all
+  hosts: {{ limit }}
   vars:
     yum_name: "*"
     yum_state:  latest
-    bugfix_only: no
-    security_only: no
+    bugfix_only: {{ yes if patch_type == 'bugfix' else no }}
+    security_only: {{ yes if patch_type == 'security' else no }}
   tasks:
 
     - name: upgrade packages via yum
